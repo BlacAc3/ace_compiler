@@ -18,8 +18,13 @@ class TokenType:
     ELSE = "ELSE"
     WHILE = "WHILE"
     RETURN = "RETURN"
-    INT = "INT"
+    INTEGER = "INTEGER"
     FLOAT = "FLOAT"
+    LEFT_PAREN = "LEFT_PAREN"
+    RIGHT_PAREN = "RIGHT_PAREN"
+    LEFT_BRACE = "LEFT_BRACE"
+    RIGHT_BRACE = "RIGHT_BRACE"
+    RETURN = "RETURN"
 
 class Token:
     def __init__(self, type_, value, line, column):
@@ -29,7 +34,8 @@ class Token:
         self.column = column
 
     def __repr__(self):
-        return f"Token({self.type}, {self.value}, {self.line}, {self.column})"
+        return f"{self.type}({self.value})"
+        # return f"Token({self.type}, {self.value}, {self.line}, {self.column})"
 
     def __str__(self):
         return f"{self.type}({self.value})"
