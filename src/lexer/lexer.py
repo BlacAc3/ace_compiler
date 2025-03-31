@@ -1,10 +1,5 @@
 from ..token import TokenType, Token
 from .lexer_helper import LexerArithmeticHelper, LexerConditionalHelper
-from src.lexer.lexer_helper import handle_words
-
-
-
-
 
 class Lexer:
 
@@ -13,7 +8,6 @@ class Lexer:
             self.source_code = source_code
         else:
             raise TypeError("source_code must be a string")
-
 
         self.comments = ""
         self.position = 0

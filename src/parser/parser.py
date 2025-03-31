@@ -48,10 +48,10 @@ class Parser:
         if self.match(TokenType.NUMBER):
             return ("number", token.value)
 
-        if self.match(TokenType.IDENTIFIER):
+        elif self.match(TokenType.IDENTIFIER):
             return ("variable", token.value)
 
-        if self.match(TokenType.LEFT_PAREN):
+        elif self.match(TokenType.LEFT_PAREN):
             expr = self.parse_expression()
             if not self.match(TokenType.RIGHT_PAREN):
                 raise SyntaxError("Expected ')'")
@@ -76,23 +76,29 @@ class Parser:
     def parse_if_statement(self):
         """Parse an if statement"""
         self.match(TokenType.IF) #Consume the 'if' token
-        self.match(TokenType.LEFT_PAREN) #consume the '(' token
+        if not self.match(TokenType.LEFT_PAREN): #consume the '(' token
+            raise SyntaxError("Expected '(' after 'if'")
         condition = self.parse_expression()
-        self.match(TokenType.RIGHT_PAREN) #consume the ')' token
-        self.match(TokenType.LEFT_BRACE)
+        if not self.match(TokenType.RIGHT_PAREN): #consume the ')' token
+            raise SyntaxError("Expected ')' after if condition")
+        if not self.match(TokenType.LEFT_BRACE):
+            raise SyntaxError("Expected '{' after if condition")
 
         true_branch=[]
         while self.peek() and self.peek().type != TokenType.RIGHT_BRACE:
             true_branch.append(self.parse_statement())
-        self.match(TokenType.RIGHT_BRACE)
+        if not self.match(TokenType.RIGHT_BRACE):
+            raise SyntaxError("Expected '}' after if condition")
 
         false_branch =None
         if self.match(TokenType.ELSE):
-            self.match(TokenType.LEFT_BRACE)
+            if not self.match(TokenType.LEFT_BRACE):
+                raise SyntaxError("Expected '{' after else")
             false_branch = []
             while self.peek() and self.peek().type != TokenType.RIGHT_BRACE:
                 false_branch.append(self.parse_statement())
-            self.match(TokenType.RIGHT_BRACE)
+            if not self.match(TokenType.RIGHT_BRACE):
+                raise SyntaxError("Expected '}' after else condition")
         return ("if", condition, true_branch, false_branch)
 
 
