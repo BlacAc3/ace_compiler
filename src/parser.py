@@ -1,4 +1,4 @@
-from ..token import TokenType
+from .token import TokenType
 
 class Parser:
     def __init__(self, tokens):
@@ -35,7 +35,7 @@ class Parser:
     def parse_term(self):
         """Handle multiplication and division."""
         node = self.parse_factor()
-        while self.match(TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.PLUS, TokenType.MINUS,TokenType.GREATER_THAN, TokenType.LESS_THAN):
+        while self.match(TokenType.MULTIPLY, TokenType.DIVIDE, TokenType.PLUS, TokenType.MINUS,TokenType.GREATER_THAN, TokenType.LESS_THAN, TokenType.EQUALS):
             operator = self.tokens[self.current - 1]  # Get the last consumed operator
             right = self.parse_factor()
             node = ("binary_op", operator, node, right)
@@ -78,7 +78,7 @@ class Parser:
         self.match(TokenType.IF) #Consume the 'if' token
         if not self.match(TokenType.LEFT_PAREN): #consume the '(' token
             raise SyntaxError("Expected '(' after 'if'")
-        condition = self.parse_expression()
+        condition = self.parse_statement()
         if not self.match(TokenType.RIGHT_PAREN): #consume the ')' token
             raise SyntaxError("Expected ')' after if condition")
         if not self.match(TokenType.LEFT_BRACE):
@@ -105,16 +105,19 @@ class Parser:
     def parse_while_statement(self):
         """Parse a while loop."""
         self.match(TokenType.WHILE)  # Consume 'while'
-        self.match(TokenType.LEFT_PAREN)  # Consume '('
+        if not self.match(TokenType.LEFT_PAREN):
+            raise SyntaxError("Expected '(' after 'while'")
         condition = self.parse_expression()
-        self.match(TokenType.RIGHT_PAREN)  # Consume ')'
-        self.match(TokenType.LEFT_BRACE)  # Consume '{'
-
+        if not self.match(TokenType.RIGHT_PAREN):
+            raise SyntaxError("Expected ')' after while condition")
+        if not self.match(TokenType.LEFT_BRACE):
+            raise SyntaxError("Expected '{' after while condition")
         body = []
         while self.peek() and self.peek().type != TokenType.RIGHT_BRACE:
             body.append(self.parse_statement())
 
-        self.match(TokenType.RIGHT_BRACE)  # Consume '}'
+        if not self.match(TokenType.RIGHT_BRACE):
+            raise SyntaxError("Expected '}' after while condition")
 
         return ("while", condition, body)
 

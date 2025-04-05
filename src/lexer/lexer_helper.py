@@ -150,7 +150,7 @@ def handle_words(instance, word, tokens, callback):
         result += str(instance.peek_char(i))
     if result == word:
         callback()
-        print(f"call back called for {result}")
+        # print(f"call back called for {result}")
     else:
         return tokens
     instance.next_char(len(result)-1)
